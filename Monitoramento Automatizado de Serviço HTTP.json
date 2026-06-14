@@ -1,0 +1,848 @@
+{
+  "name": "Monitoramento Automatizado de Serviço HTTP",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -384,
+        -80
+      ],
+      "id": "9ef9a710-075b-4d12-9f3e-a35fcbc8d3ea",
+      "name": "Agendamento de Monitoramento (5 min)"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/posts/1",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        -80
+      ],
+      "id": "04eb6c93-78a6-4f05-8f1f-e195c22f5eea",
+      "name": "🌐 Verificar API"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d1e760fb-0303-411a-b991-fa32aeb29b98",
+              "leftValue": "={{$json[\"statusCode\"]}}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        -80
+      ],
+      "id": "76b82820-ccb5-4b15-b288-dfe532f6487a",
+      "name": "🔍 Serviço Está Indisponível?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "68298302-5a91-4f59-9056-556d88dc2a3a",
+              "name": "status",
+              "value": "ALERTA: problema detectado 🚨",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        -208
+      ],
+      "id": "f991f7c9-04af-4486-98a1-9c09893c4d47",
+      "name": "🚨 Gerar Evento de Incidente"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI",
+          "mode": "list",
+          "cachedResultName": "Monitoramento_Incidentes_V3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Servico": "={{$json[\"servico\"]}}",
+            "Status": "={{$json[\"tipo\"]}}",
+            "Severidade": "={{$json[\"severidade\"]}}",
+            "Mensagem": "={{$json[\"mensagem\"]}}",
+            "DataHora": "={{$json[\"data\"]}} {{$json[\"hora\"]}}",
+            "TempoIndisponibilidade": "={{$json[\"tempoIndisponibilidade\"]}}",
+            "Evento": "={{$json[\"evento\"]}}",
+            "DuracaoMinutos": "={{$json[\"duracaoMinutos\"]}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DataHora",
+              "displayName": "DataHora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Servico",
+              "displayName": "Servico",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severidade",
+              "displayName": "Severidade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mensagem",
+              "displayName": "Mensagem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TempoIndisponibilidade",
+              "displayName": "TempoIndisponibilidade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Evento",
+              "displayName": "Evento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DuracaoMinutos",
+              "displayName": "DuracaoMinutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1328,
+        -208
+      ],
+      "id": "8a7c97ea-bb99-49b5-8731-832d4e42db46",
+      "name": "📝 Registrar Incidente",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RIYP2VotnrZ2iA3g",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "859474045",
+        "text": "=🚨 *ALERTA DE INCIDENTE*\n\n🌐 Serviço: {{$node[\"🕒 Enriquecer Evento de Incidente\"].json[\"servico\"]}}\n\n📌 Tipo: {{$node[\"🕒 Enriquecer Evento de Incidente\"].json[\"tipo\"]}}\n⚠️ Severidade: {{$node[\"🕒 Enriquecer Evento de Incidente\"].json[\"severidade\"]}}\n\n📝 Descrição:\n{{$node[\"🕒 Enriquecer Evento de Incidente\"].json[\"mensagem\"]}}\n\n📅 Data: {{$node[\"🕒 Enriquecer Evento de Incidente\"].json[\"data\"]}}\n🕒 Hora: {{$node[\"🕒 Enriquecer Evento de Incidente\"].json[\"hora\"]}}\n\n🔔 Notificação automática enviada via Telegram",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1520,
+        -208
+      ],
+      "id": "d2135d93-7122-442d-9b6c-4d51caf9f992",
+      "name": "📲 Telegram - Incidente",
+      "webhookId": "788f162c-f7fa-4a7e-9117-a504009f23d1",
+      "credentials": {
+        "telegramApi": {
+          "id": "dfoWUH97zhcqqJFW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ultimaLinha = $input.first().json;\n\nconst dataIncidente = ultimaLinha.ultimaDataHora;\n\n// Converte:\n// 10/06/2026 18:48:02\nconst [dataParte, horaParte] = dataIncidente.split(' ');\nconst [dia, mes, ano] = dataParte.split('/');\n\nconst dataInicio = new Date(\n  `${ano}-${mes}-${dia}T${horaParte}`\n);\n\nconst agora = new Date();\n\nconst diferencaMs = agora - dataInicio;\n\nconst duracaoMinutos = Math.floor(\n  diferencaMs / (1000 * 60)\n);\n\nconst data = agora.toLocaleDateString('pt-BR');\nconst hora = agora.toLocaleTimeString('pt-BR');\n\nreturn [\n  {\n    tipo: \"Recuperação\",\n    severidade: \"Baixa\",\n    mensagem: \"Serviço recuperado com sucesso\",\n    servico: ultimaLinha.servico,\n\n    data: data,\n    hora: hora,\n\n    evento: \"RECUPERACAO\",\n\n    duracaoMinutos: duracaoMinutos,\n    tempoIndisponibilidade: duracaoMinutos\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        0
+      ],
+      "id": "4a8250e3-e003-403e-874f-60d4c3775a65",
+      "name": "✅ Gerar Evento de Recuperação"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI",
+          "mode": "list",
+          "cachedResultName": "Monitoramento_Incidentes_V3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "DataHora": "={{$json[\"data\"]}} {{$json[\"hora\"]}}",
+            "Servico": "={{$json[\"servico\"]}}",
+            "Status": "={{$json[\"tipo\"]}}",
+            "Severidade": "={{$json[\"severidade\"]}}",
+            "Mensagem": "={{$json[\"mensagem\"]}}",
+            "TempoIndisponibilidade": "={{$json[\"tempoIndisponibilidade\"]}}",
+            "Evento": "={{$json[\"evento\"]}}",
+            "DuracaoMinutos": "={{$json[\"duracaoMinutos\"]}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "DataHora",
+              "displayName": "DataHora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Servico",
+              "displayName": "Servico",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Severidade",
+              "displayName": "Severidade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mensagem",
+              "displayName": "Mensagem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TempoIndisponibilidade",
+              "displayName": "TempoIndisponibilidade",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Evento",
+              "displayName": "Evento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "DuracaoMinutos",
+              "displayName": "DuracaoMinutos",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "4801ee46-8ea6-4d47-ac89-ec2f039cf4b8",
+      "name": "📝 Registrar Recuperação",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RIYP2VotnrZ2iA3g",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b70c822-3f4d-4a1b-9d11-b2781dfa13a8",
+              "name": "mensagem",
+              "value": "=Serviço funcionando normalmente ✅",
+              "type": "string"
+            },
+            {
+              "id": "b31da193-88c6-480b-86ad-ceb0ac59c55f",
+              "name": "tipo",
+              "value": "Normal",
+              "type": "string"
+            },
+            {
+              "id": "1e1f85b2-56bd-4661-807e-14a1d12ab932",
+              "name": "severidade",
+              "value": "Baixa",
+              "type": "string"
+            },
+            {
+              "id": "dab9b70d-158a-4920-8b0e-f84797248bb2",
+              "name": "servico",
+              "value": "API JSONPlaceholder",
+              "type": "string"
+            },
+            {
+              "id": "c37c4ecf-6368-47e4-bddc-269cede3333c",
+              "name": "=data",
+              "value": "={{ new Date().toLocaleDateString('pt-BR') }}",
+              "type": "string"
+            },
+            {
+              "id": "b42ef754-5b8d-4ccd-8615-9114d00dd1fc",
+              "name": "=hora",
+              "value": "={{ new Date().toLocaleTimeString('pt-BR') }}",
+              "type": "string"
+            },
+            {
+              "id": "aac4d998-8509-4157-bb2c-6ff8d2757dbf",
+              "name": "evento",
+              "value": "NORMAL",
+              "type": "string"
+            },
+            {
+              "id": "ce1a0145-4cf8-4599-9587-4f7738153b5f",
+              "name": "duracaoMinutos",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "2c97ac59-9273-4fce-87a1-7eb25617860c",
+              "name": "tempoIndisponibilidade",
+              "value": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        16
+      ],
+      "id": "fd9804f3-5313-4ade-9eb2-85df1ae1b006",
+      "name": "💚 Serviço Operacional"
+    },
+    {
+      "parameters": {
+        "chatId": "859474045",
+        "text": "=✅ SERVIÇO RECUPERADO\n\n🌐 Serviço: {{$json[\"Servico\"]}}\n\n📌 Evento: {{$json[\"Evento\"]}}\n\n⏱️ Tempo de indisponibilidade:\n{{$json[\"DuracaoMinutos\"]}} minutos\n\n📅 Data/Hora:\n{{$json[\"DataHora\"]}}\n\n✅ Serviço voltou a operar normalmente",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1520,
+        0
+      ],
+      "id": "5967c161-ce51-4c59-8377-eb8097aefd52",
+      "name": "📲 Telegram - Recuperação",
+      "webhookId": "5540a857-d88b-4386-8be2-820d0b0fdfa1",
+      "credentials": {
+        "telegramApi": {
+          "id": "dfoWUH97zhcqqJFW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const agora = new Date();\n\nconst data = agora.toLocaleDateString('pt-BR');\nconst hora = agora.toLocaleTimeString('pt-BR');\n\nreturn [\n  {\n    tipo: \"Incidente\",\n    severidade: \"Alta\",\n    mensagem: \"Falha detectada no serviço monitorado\",\n    servico: \"API JSONPlaceholder\",\n    data: data,\n    hora: hora,\n    notificacao: \"🔔 Notificação automática enviada via Telegram\",\n\n    evento: \"INCIDENTE\",\n    duracaoMinutos: 0,\n    tempoIndisponibilidade: 0\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -208
+      ],
+      "id": "fc8fa0f3-d749-47e8-a3ef-7724fa2b6c50",
+      "name": "🕒 Enriquecer Evento de Incidente"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f77497f4-2096-40b3-9c6e-7015e4da4ead",
+              "leftValue": "={{$json[\"ultimoEvento\"]}}",
+              "rightValue": "=INCIDENTE",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        -224
+      ],
+      "id": "2eb04617-8d0b-4256-8327-9d192b2aaa7a",
+      "name": "❓ Último Evento Foi Incidente?1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI",
+          "mode": "list",
+          "cachedResultName": "Monitoramento_Incidentes_V3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        -224
+      ],
+      "id": "a5a09327-7d5b-4ad6-8af8-67571fcc3057",
+      "name": "📖 Consultar Último Evento (Incidente)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RIYP2VotnrZ2iA3g",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const linhas = $input.all();\n\nconst ultimaLinha = linhas[linhas.length - 1].json;\n\nreturn [\n  {\n    ultimoEvento: ultimaLinha.Evento,\n    ultimaDataHora: ultimaLinha.DataHora,\n    servico: ultimaLinha.Servico\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -224
+      ],
+      "id": "9c506773-c892-4831-a3d6-9d1b7271eaca",
+      "name": "📊 Obter Último Estado (Incidente)"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI",
+          "mode": "list",
+          "cachedResultName": "Monitoramento_Incidentes_V3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n5OL7vH0ZU5CKIzdd5lOBbKQ-PuBdxF5M4Sg2vpK2QI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        464,
+        16
+      ],
+      "id": "01ecdbe2-8392-4025-b2dc-1ca9c3d2b4ba",
+      "name": "📖 Consultar Último Evento (Recuperação)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "RIYP2VotnrZ2iA3g",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const linhas = $input.all();\n\nconst ultimaLinha = linhas[linhas.length - 1].json;\n\nreturn [\n  {\n    ultimoEvento: ultimaLinha.Evento,\n    ultimaDataHora: ultimaLinha.DataHora,\n    servico: ultimaLinha.Servico\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        16
+      ],
+      "id": "806c986a-fc21-4ee5-9986-beda5962c54f",
+      "name": "📊 Obter Último Estado (Recuperação)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f77497f4-2096-40b3-9c6e-7015e4da4ead",
+              "leftValue": "={{$json[\"ultimoEvento\"]}}",
+              "rightValue": "=INCIDENTE",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        16
+      ],
+      "id": "d4c932f4-5e39-4c66-9d15-173af92f0506",
+      "name": "❓ Último Evento Foi Incidente? (Recuperação)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Agendamento de Monitoramento (5 min)": {
+      "main": [
+        [
+          {
+            "node": "🌐 Verificar API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🌐 Verificar API": {
+      "main": [
+        [
+          {
+            "node": "🔍 Serviço Está Indisponível?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Serviço Está Indisponível?": {
+      "main": [
+        [
+          {
+            "node": "📖 Consultar Último Evento (Incidente)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "💚 Serviço Operacional",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚨 Gerar Evento de Incidente": {
+      "main": [
+        [
+          {
+            "node": "🕒 Enriquecer Evento de Incidente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Registrar Incidente": {
+      "main": [
+        [
+          {
+            "node": "📲 Telegram - Incidente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📲 Telegram - Incidente": {
+      "main": [
+        []
+      ]
+    },
+    "✅ Gerar Evento de Recuperação": {
+      "main": [
+        [
+          {
+            "node": "📝 Registrar Recuperação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💚 Serviço Operacional": {
+      "main": [
+        [
+          {
+            "node": "📖 Consultar Último Evento (Recuperação)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Registrar Recuperação": {
+      "main": [
+        [
+          {
+            "node": "📲 Telegram - Recuperação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🕒 Enriquecer Evento de Incidente": {
+      "main": [
+        [
+          {
+            "node": "📝 Registrar Incidente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "❓ Último Evento Foi Incidente?1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "🚨 Gerar Evento de Incidente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📖 Consultar Último Evento (Incidente)": {
+      "main": [
+        [
+          {
+            "node": "📊 Obter Último Estado (Incidente)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Obter Último Estado (Incidente)": {
+      "main": [
+        [
+          {
+            "node": "❓ Último Evento Foi Incidente?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📖 Consultar Último Evento (Recuperação)": {
+      "main": [
+        [
+          {
+            "node": "📊 Obter Último Estado (Recuperação)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Obter Último Estado (Recuperação)": {
+      "main": [
+        [
+          {
+            "node": "❓ Último Evento Foi Incidente? (Recuperação)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "❓ Último Evento Foi Incidente? (Recuperação)": {
+      "main": [
+        [
+          {
+            "node": "✅ Gerar Evento de Recuperação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c3b0e96b-045c-497b-b9ae-d484f37a1b01",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "863d7a8477c547411b88f951cdd199722907594747d5d86d3a4caf368bc73f53"
+  },
+  "id": "ToFPwNTa3pQC2af7",
+  "tags": []
+}
