@@ -46,7 +46,23 @@ O dashboard apresenta:
 
 ## Capturas de Tela
 
-As imagens do projeto estão disponíveis na pasta `screenshots`.
+## Capturas de Tela
+
+### Fluxo n8n
+
+![Fluxo n8n](screenshots/Canvas%20completo%20do%20n8n.png)
+
+### Dados Brutos
+
+![Dados Brutos](screenshots/Dados_Brutos.png)
+
+### Dashboard
+
+![Dashboard](screenshots/Dashboard.png)
+
+### Alertas Telegram
+
+![Telegram](screenshots/Telegram.png)
 
 ## Como Utilizar
 
