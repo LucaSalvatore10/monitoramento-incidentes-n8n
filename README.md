@@ -46,8 +46,6 @@ O dashboard apresenta:
 
 ## Capturas de Tela
 
-## Capturas de Tela
-
 ### Fluxo n8n
 
 ![Fluxo n8n](screenshots/Canvas%20completo%20do%20n8n.png)
